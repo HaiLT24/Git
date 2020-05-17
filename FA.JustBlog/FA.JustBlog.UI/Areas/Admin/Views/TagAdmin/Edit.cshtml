@@ -1,0 +1,57 @@
+﻿@model Tag
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<h2>Edit Tag</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="form-group">
+            <label class="col-md-2">Tag Name : <label style="color:red"> *</label></label>
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+            <br />
+            <label class="col-md-2">Description : </label>
+            <div class="col-md-5">
+                @Html.TextAreaFor(model => model.Description, new { @cols = "92", @rows = "6" })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-capitalize" })
+            </div>
+            <br />
+            <label class="col-md-2">Count : </label>
+            <div class="col-md-5">
+                @Html.TextBoxFor(model => model.Count,new {disabled = "disabled", @readonly = "readonly", @class="col-md-12" })
+                @Html.ValidationMessageFor(model => model.Count, "", new { @class = "text-capitalize" })
+            </div>
+            <br />
+            <label class="col-md-2">UrlString : <label style="color:red"> *</label></label>
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.UrlSlug, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.UrlSlug, "", new { @class = "text-capitalize" })
+            </div>
+
+            <div class="col-md-5" style="visibility: hidden">
+                @Html.EditorFor(model => model.Posts, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Posts, "", new { @class = "text-capitalize" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" value="Save" class="btn btn-info" />
+                <a class="btn btn-danger" href="@Url.Action("Index", "TagAdmin")">Back</a>
+            </div>
+        </div>
+    </div>
+}

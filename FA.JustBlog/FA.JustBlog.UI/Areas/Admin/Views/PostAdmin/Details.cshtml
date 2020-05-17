@@ -1,0 +1,138 @@
+﻿@model Post
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Detail Category @Model.Title</h2>
+<hr />
+<div class="container-fluid">
+    <div class="row col-md-12">
+        <div>
+            @using (Html.BeginForm("Delete", "PostAdmin", new { id = Model.Id }, FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <button type="submit" onclick="return confirm('Are you sure to delete this category?');" class="btn btn-danger" style="width: 80px">Delete</button>
+            }
+        </div>
+        &nbsp;  
+        <div>
+            <a class="btn btn-info" href="@Url.Action("Edit", "PostAdmin", new {id = Model.Id})" style="width: 80px">Edit</a>
+        </div>
+    </div>
+    <div>
+        <hr />
+        <dl class="row">
+            <dt class="col-md-3">
+                @Html.DisplayNameFor(model => model.Title)
+            </dt>
+            <dd class="col-md-9">
+                @Html.DisplayFor(model => model.Title)
+            </dd>
+        </dl>
+        <hr />
+        <dl class="row">
+            <dt class="col-md-3">
+                @Html.DisplayNameFor(model => model.ShortDescription)
+            </dt>
+            <dd class="col-md-9">
+                @Html.Raw(Model.ShortDescription)
+            </dd>
+        </dl>
+        <hr />
+        <dl class="row">
+            <dt class="col-md-3">
+                @Html.DisplayNameFor(model => model.PostContent)
+            </dt>
+            <dd class="col-md-9">
+                @Html.Raw(Model.PostContent)
+            </dd>
+        </dl>
+        <hr />
+        <dl class="row">
+            <dt class="col-md-3">
+                @Html.DisplayNameFor(model => model.UrlSlug)
+            </dt>
+            <dd class="col-md-9">
+                @Html.DisplayFor(model => model.UrlSlug)
+            </dd>
+        </dl>
+        <hr />
+        <dl class="row">
+            <dt class="col-md-3">
+                @Html.DisplayNameFor(model => model.Publisher)
+            </dt>
+            <dd class="col-md-9">
+                @Html.DisplayFor(model => model.Publisher)
+            </dd>
+        </dl>
+        <hr />
+        <dl class="row">
+            <dt class="col-md-3">
+                @Html.DisplayNameFor(model => model.PostedOn)
+            </dt>
+            <dd class="col-md-9">
+                @Html.DisplayFor(model => model.PostedOn)
+            </dd>
+        </dl>
+        <hr />
+        <dl class="row">
+            <dt class="col-md-3">
+                @Html.DisplayNameFor(model => model.Modified)
+            </dt>
+            <dd class="col-md-9">
+                @Html.DisplayFor(model => model.Modified)
+            </dd>
+        </dl>
+        <hr />
+        <dl class="row">
+            <dt class="col-md-3">
+                @Html.DisplayNameFor(model => model.ViewCount)
+            </dt>
+            <dd class="col-md-9">
+                @Html.DisplayFor(model => model.ViewCount)
+            </dd>
+        </dl>
+        <hr />
+        <dl class="row">
+            <dt class="col-md-3">
+                @Html.DisplayNameFor(model => model.RateCount)
+            </dt>
+            <dd class="col-md-9">
+                @Html.DisplayFor(model => model.RateCount)
+            </dd>
+        </dl>
+        <hr />
+        <dl class="row">
+            <dt class="col-md-3">
+                @Html.DisplayNameFor(model => model.TotalRate)
+            </dt>
+            <dd class="col-md-9">
+                @Html.DisplayFor(model => model.TotalRate)
+            </dd>
+        </dl>
+        <hr />
+        <dl class="row">
+            <dt class="col-md-3">
+                @Html.DisplayNameFor(model => model.Category.Name)
+            </dt>
+            <dd class="col-md-9">
+                @Html.DisplayFor(model => model.Category.Name)
+            </dd>
+        </dl>
+        <hr />
+        <dl class="row">
+            <dt class="col-md-3">
+                @Html.DisplayNameFor(model => model.Tags)
+            </dt>
+            <dd class="col-md-9">
+                @foreach (var item in Model.Tags)
+                {
+                   <button class="btn-warning"><a href=@Url.Action("Index","TagAdmin" ) style="color: black">@item.Name</a></button> 
+                }
+            </dd>
+        </dl>
+    </div>
+    <hr />
+    <br />
+</div>

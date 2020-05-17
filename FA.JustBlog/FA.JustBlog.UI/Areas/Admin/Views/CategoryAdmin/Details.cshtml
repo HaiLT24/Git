@@ -1,0 +1,59 @@
+﻿@model Category
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Detail Category @Model.Name</h2>
+
+<div class="container-fluid">
+    <div>
+        <hr />
+        <dl class="row">
+            <dt class="col-md-3">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-md-9">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+        </dl>
+        <hr />
+        <dl class="row">
+            <dt class="col-md-3">
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd class="col-md-9">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+        </dl>
+        <hr />
+        <dl class="row">
+            <dt class="col-md-3">
+                @Html.DisplayNameFor(model => model.Posts)
+            </dt>
+            <dd class="col-md-9">
+                @Html.DisplayFor(model => model.Posts.Count)
+            </dd>
+        </dl>
+    </div>
+    <hr />
+    <div class="row">
+        <div>
+            @using (Html.BeginForm("Delete", "CategoryAdmin", new { id = Model.Id }, FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <button type="submit" onclick="return confirm('Are you sure to delete this category?');" class="btn btn-danger" style="width: 80px">Delete</button>
+            }
+        </div>
+        &nbsp;
+        <div>
+            <a class="btn btn-info" href="@Url.Action("Edit", "CategoryAdmin", new {id = Model.Id})" style="width: 80px">Edit</a>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

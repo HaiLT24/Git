@@ -1,0 +1,203 @@
+﻿@using System.Web.UI.WebControls
+@model FA.JustBlog.DataAccessLayer.Common.PaginatedList<Post>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    a {
+        color: black;
+    }
+
+    .table-head-category {
+        background: lightgoldenrodyellow;
+    }
+
+    .btn-default {
+        background-color: lightgoldenrodyellow;
+    }
+
+    #cancel {
+        color: black;
+    }
+
+    .title {
+        width: 25%;
+    }
+
+    .publisher {
+        width: 8%;
+        text-align: center;
+    }
+
+    .comment {
+        width: 3%;
+        text-align: center;
+    }
+
+    .viewCount {
+        width: 8%;
+
+    }
+</style>
+
+
+<h2>POST</h2>
+<hr />
+<div>
+    <a class="btn btn-info" href="@Url.Action("Create", "PostAdmin")">Create Post</a>
+    <hr />
+    <div class="row col-md-12">
+        <div class="col-md-9">
+            @using (Html.BeginForm("Index", "PostAdmin", FormMethod.Get))
+            {
+                <p>
+                    Page Size: @Html.DropDownList("pageSize", new SelectList(ViewBag.size, "Value", "Text", ViewData["CurrentSize"]), new { @onchange = "this.form.submit();" })
+                </p>
+            }
+        </div>
+        <div class="col-md-3" style="padding-left: 8%">
+            @using (Html.BeginForm("Index", "PostAdmin", FormMethod.Get))
+            {
+                <p>
+                    @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)<button class="btn-info search" type="submit"><i class="fas fa-search"></i></button><button class="btn-info search">
+                        <i class="fas fa-window-close">
+                            <a href=@Url.Action("Index", "PostAdmin",
+                                            new {sortOrder = ""}) id="cancel"></a>
+                        </i>
+                    </button>
+                </p>
+            }
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered" width="100%">
+                <thead>
+                    <tr class="table-head-category">
+                        <th class="title">
+                            @Html.ActionLink("Title", "Index", new { sortOrder = ViewData["NameSortParm"], currentFilter = ViewBag.CurrentFilter, pageSize = ViewData["CurrentSize"] })
+                        </th>
+                        <th>
+                            @Html.ActionLink("Category", "Index", new { sortOrder = ViewData["CategorySortParm"], currentFilter = ViewBag.CurrentFilter, pageSize = ViewData["CurrentSize"] })
+                        </th>
+                        <th>
+                            @Html.ActionLink("Posted On", "Index", new { sortOrder = ViewData["PostedSortParm"], currentFilter = ViewBag.CurrentFilter, pageSize = ViewData["CurrentSize"] })
+                        </th>
+                        <th class="viewCount">
+                            @Html.ActionLink("View Count", "Index", new { sortOrder = ViewData["ViewCountSortParm"], currentFilter = ViewBag.CurrentFilter, pageSize = ViewData["CurrentSize"] })
+                        </th>
+                        <th>
+                            @Html.ActionLink("Rate", "Index", new { sortOrder = ViewData["RateSortParm"], currentFilter = ViewBag.CurrentFilter, pageSize = ViewData["CurrentSize"] })
+                        </th>
+                        <th class="post comment">
+                            @Html.ActionLink("Comment", "Index", new { sortOrder = ViewData["CommentSortParm"], currentFilter = ViewBag.CurrentFilter, pageSize = ViewData["CurrentSize"] })
+                        </th>
+                        <th class="publisher">
+                            Publisher
+                        </th>
+                        <th style="width: 6%"></th>
+                        <th style="width: 6%"></th>
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr class="table-head-category">
+                        <th class="title">
+                            @Html.ActionLink("Title", "Index", new { sortOrder = ViewData["NameSortParm"], currentFilter = ViewBag.CurrentFilter, pageSize = ViewData["CurrentSize"] })
+                        </th>
+                        <th>
+                            @Html.ActionLink("Category", "Index", new { sortOrder = ViewData["CategorySortParm"], currentFilter = ViewBag.CurrentFilter, pageSize = ViewData["CurrentSize"] })
+                        </th>
+                        <th>
+                            @Html.ActionLink("Posted On", "Index", new { sortOrder = ViewData["PostedSortParm"], currentFilter = ViewBag.CurrentFilter, pageSize = ViewData["CurrentSize"] })
+                        </th>
+                        <th class="viewCount">
+                            @Html.ActionLink("View Count", "Index", new { sortOrder = ViewData["ViewCountSortParm"], currentFilter = ViewBag.CurrentFilter, pageSize = ViewData["CurrentSize"] })
+                        </th>
+                        <th>
+                            @Html.ActionLink("Rate", "Index", new { sortOrder = ViewData["RateSortParm"], currentFilter = ViewBag.CurrentFilter, pageSize = ViewData["CurrentSize"] })
+                        </th>
+                        <th class="post comment">
+                            @Html.ActionLink("Comment", "Index", new { sortOrder = ViewData["CommentSortParm"], currentFilter = ViewBag.CurrentFilter, pageSize = ViewData["CurrentSize"] })
+                        </th>
+                        <th class="publisher">
+                            Publisher
+                        </th>
+                        <th style="width: 6%"></th>
+                        <th style="width: 6%"></th>
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="title"><a href=@Url.Action("Details", "PostAdmin", new {id = item.Id})>@item.Title</a></td>
+                            @if (item.Category != null)
+                            {
+                                <td>@item.Category.Name</td>
+                            }
+                            else
+                            {
+                                <td></td>
+                            }
+                            <td>@item.PostedOn</td>
+                            <td class="viewCount">@item.ViewCount</td>
+                            <td>@item.Rate</td>
+                            <td class="post comment">@item.Comments.Count</td>
+                            <td>
+                                <a href="#" class="btn-active" data-id="@item.Id">@(item.Publisher ?"Activated" : "Inactivated")</a>
+                            </td>
+                            <td>
+                                @using (Html.BeginForm("Delete", "PostAdmin", new { id = item.Id }, FormMethod.Post))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" onclick="return confirm('Are you sure to delete this category?');" class="btn btn-danger" style="width: 80px">Delete</button>
+                                }
+                            </td>
+                            <td >
+                                <a class="btn btn-info" href="@Url.Action("Edit", "PostAdmin", new {id = item.Id})" style="width: 80px">Edit</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <nav aria-label="Page navigation example" style="margin-left: 40%">
+                <ul class="pagination justify-content-center">
+                    @{
+                        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                        ViewBag.PageRange = 3;
+                    }
+                    <li class="page-item">
+                        <a href="@Url.Action("Index", "PostAdmin", new {sortOrder = ViewData["CurrentSort"], page = 1, currentFilter = ViewData["CurrentFilter"],pageSize = ViewData["CurrentSize"]})"
+                           class="btn page-link @prevDisabled"><<</a>
+                    <li class="page-item">
+                        <a href="@Url.Action("Index", "PostAdmin", new {sortOrder = ViewData["CurrentSort"], page = (Model.PageIndex - 1 <= 0 ? 1 : Model.PageIndex - 1), currentFilter = ViewData["CurrentFilter"], pageSize = ViewData["CurrentSize"]})"
+                           class="btn page-link @prevDisabled"><</a>
+                    </li>
+                    @for (var i = 1; i <= Model.TotalPages; i++)
+                    {
+                        if (i >= Model.PageIndex - ViewBag.PageRange && i <= Model.PageIndex + ViewBag.PageRange)
+                        {
+                            <li class="page-item">
+                                <a class="@(i == Model.PageIndex ? "Current" : "") page-link"
+                                   href="@Url.Action("Index", "PostAdmin", new {sortOrder = ViewData["CurrentSort"], page = i, currentFilter = ViewData["CurrentFilter"], pageSize = ViewData["CurrentSize"]})">@i</a>
+                            </li>
+                        }
+                    }
+                    <li class="page-item">
+                        <a href="@Url.Action("Index", "PostAdmin", new {sortOrder = ViewData["CurrentSort"], page = (Model.PageIndex + 1 > Model.TotalPages ? Model.TotalPages : Model.PageIndex + 1), currentFilter = ViewData["CurrentFilter"],pageSize = ViewData["CurrentSize"]})"
+                           class="btn page-link @nextDisabled">></a>
+                    <li class="page-item">
+                        <a href="@Url.Action("Index", "PostAdmin", new {sortOrder = ViewData["CurrentSort"], page = (Model.TotalPages), currentFilter = ViewData["CurrentFilter"], pageSize = ViewData["CurrentSize"]})"
+                           class="btn page-link @nextDisabled">>></a>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Areas/Admin/Asset/js/controller/postController.js"></script>
+}

@@ -1,0 +1,39 @@
+﻿@using FA.JustBlog.UI.Helper
+@model IEnumerable<Post>
+
+@{
+    ViewBag.UrlImage = "/Assets/img/home-bg.jpg";
+}
+<div class="row">
+    <div class="col-lg-10 col-md-12 mx-auto">
+        <hr />
+        @foreach (var item in Model)
+        {
+            <div class="post-preview">
+                <a href=@Url.Action("Index","Post",new{id=item.Id})>
+                    <h2 class="post-title">
+                        @item.Title
+                    </h2>
+                </a>
+                <small>Category : @Html.CategoryLink(item.Category)</small>&nbsp;
+                <br />
+                <small>
+                    Tag :
+                    @foreach (var tag in item.Tags)
+                    {
+                        <a class="TagLink" href=@Url.Action("PostsByTag", "Post", new {tagId = tag.Id}) style="color: white; background: lightsalmon">@tag.Name</a>
+                    }
+                </small>
+
+                <p class="post-meta">
+                    Posted @item.PostedOn With rate @item.Rate by @item.ViewCount
+                </p>
+
+                <p class="post-meta">
+                    @Html.Raw(item.ShortDescription)
+                </p>
+            </div>
+            <hr>
+        }
+    </div>
+</div>

@@ -1,0 +1,116 @@
+﻿@model PostAddViewModel
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>CREATE</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="container-fluid">
+            <div class="form-group">
+                <div class="row">
+                    <label class="col-md-2">Name <label style="color:red"> *</label></label>
+                    <div class="col-md-9">
+                        @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <label class="col-md-2">Tags <label style="color:red"> *</label></label>
+                    <div class="col-md-5">
+                        @Html.DropDownListFor(m => m.TagsId,
+                            new MultiSelectList(Model.Tags, "Id", "Name"),
+                            new { @class = "form-control", @id = "tag-list", @multiple = "multiple" })
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <label class="col-md-2">Category <label style="color:red"> *</label></label>
+                    <div class="col-md-5">
+                        @Html.DropDownList("CategoryId", ViewBag.CategoryId as IEnumerable<SelectListItem>, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <label class="col-md-2"> @Html.DisplayNameFor(model => model.ViewCount) <label style="color:red"> *</label></label>
+                    <div class="col-md-5">
+                        @Html.EditorFor(model => model.ViewCount, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.ViewCount, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <label class="col-md-2">@Html.DisplayNameFor(model => model.RateCount) <label style="color:red"> *</label></label>
+                    <div class="col-md-5">
+                        @Html.EditorFor(model => model.RateCount, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.RateCount, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <label class="col-md-2">@Html.DisplayNameFor(model => model.TotalRate) <label style="color:red"> *</label></label>
+                    <div class="col-md-5">
+                        @Html.EditorFor(model => model.TotalRate, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.TotalRate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <label class="col-md-2">Short Description <label style="color:red"> *</label></label>
+                    <div class="col-md-9">
+                        @Html.TextAreaFor(model => model.ShortDescription, new { cols = "92", rows = "6", @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ShortDescription, "", new { @class = "text-capitalize" })
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <label class="col-md-2">Post Content <label style="color:red"> *</label></label>
+                    <div class="col-md-9">
+                        @Html.TextAreaFor(model => model.PostContent, new { @cols = "92", @rows = "6", @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PostContent, "", new { @class = "text-capitalize" })
+                    </div>
+                </div>
+                <br />
+                <div class="row">
+                    <label class="col-md-2">Publisher <label style="color:red"> *</label></label>
+                    <div class="col-md-5">
+                        @Html.CheckBoxFor(model => model.Publisher, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+                <br />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" value="Save" class="btn btn-success" />
+                <a class="btn btn-warning" href="@Url.Action("Index", "PostAdmin")">Back</a>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="/Areas/Admin/Asset/Vender/bower_components/ckeditor/ckeditor.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            CKEDITOR.replace('PostContent');
+            $('#tag-list').select2();
+        });
+
+            //$(function () {
+            //    $('#datetimepicker1').datetimepicker();
+            //});
+    </script>
+}

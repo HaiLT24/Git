@@ -1,0 +1,28 @@
+﻿@model List<Post>
+
+<div class="container">
+    <div class="row">
+        <div class="mx-auto pl-2 ">
+            <hr />
+            <div class="row" style="margin-bottom: 10px">
+                <div class="col-md-4 mx-auto" style="font-size: smaller; padding-right: 1px">Title</div>
+                <div class="col-md-4 mx-auto" style="font-size: smaller">Posted On</div>
+                <div class="col-md-4 mx-auto" style="font-size: smaller">View</div> 
+
+            </div>
+            <hr />
+            @foreach (var item in Model)
+            {
+                <div class="post-preview">
+                    <div class="row">
+                        <div class="col-md-4 mx-auto" style="font-size: small"><a href=@Url.Action("Detail", "Post", new {id = item.Id})>@item.Title</a></div>
+                        <div class="col-md-4 mx-auto" style="font-size: small">@item.PostedOn</div>
+                        <div class="col-md-4 mx-auto" style="font-size: small">@item.ViewCount</div>
+                    </div>
+                    <hr />
+                </div>
+            }
+        </div>
+    </div>
+</div>
+

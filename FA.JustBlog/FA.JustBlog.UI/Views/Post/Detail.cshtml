@@ -1,0 +1,85 @@
+﻿@model Post
+
+@{
+    ViewBag.Title = Model.Title;
+    ViewBag.UrlImage = "/Assets/img/post-bg.jpg";
+    ViewBag.Note = "Posted " + Model.PostedOn + " with rate " + Model.Rate + " by " + Model.ViewCount;
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script>
+        function PostComment() {
+            var name = $("#txtName").val();
+            var comment = $("#txtComment").val();
+            var id = $("#txtPostId").val();
+
+            $("#btnValidate").val("Please wait....");
+            $.ajax({
+                method: "POST",
+                url: "/Post/CreateComment/",
+                data: { Name: name, comment: comment , id : id}
+                })
+                .done(function (msg) {
+                    if (msg == 1) {
+                        $("#divMessage").html("Comment posted successfully.");
+                        GetComment();
+                    } else {
+                        $("#divMessage").html("Error while commenting.");
+                    }
+                    $("#btnValidate").val("Post Comment");
+                });
+        }
+
+        $(".comment-body").append(
+            '<div class="media mb-4">' +
+            '<img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">' +
+            '<div class="media-body">' +
+            '<h5 class="mt-0">' +
+            data.Data.Name +
+            '</h5 >' +
+            data.Data.CommentText +
+            '</div>' +
+            '</div>');
+        $('#comment-form').trigger("reset");
+    </script>
+}
+
+<article>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-11 col-md-10 mx-auto">
+                <div>
+                    @Html.Raw(Model.PostContent)
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-11 col-md-10 mx-auto">
+            @using (Html.BeginForm("Detail", "Post"))
+            {
+                <div>
+                    @Html.TextBox("id", Model.Id, new { Id = "txtPostId", style = "visibility: hidden;" })
+                </div>
+                <div>
+                    @Html.TextBox("name", "", new { Id = "txtName" })
+                </div>
+                <div>
+                    @Html.TextArea("comment", "", new { Id = "txtComment" })
+                </div>
+                <input type="button" value="PostComment" id="btnValidate" onclick="javascript: PostComment();" />
+            }
+
+            <div class="comment-body col-lg-9 col-md-11 mx-auto">
+                @foreach (var comment in Model.Comments)
+                {
+                    <div class="media mb-4">
+                        <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+                        <div class="media-body">
+                            <h5 class="mt-0">@comment.Name</h5>
+                            @Html.Raw(HttpUtility.HtmlDecode(@comment.CommentText))
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        </div>
+</article>

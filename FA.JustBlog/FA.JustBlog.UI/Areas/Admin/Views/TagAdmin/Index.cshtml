@@ -1,0 +1,159 @@
+﻿@model FA.JustBlog.DataAccessLayer.Common.PaginatedList<Tag>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    a {
+        color: black;
+    }
+
+    .table-head-tag {
+        background: lightgoldenrodyellow;
+    }
+
+    .btn-default {
+        background-color: lightgoldenrodyellow;
+    }
+
+    #cancel {
+        color: black;
+    }
+</style>
+
+<h2>TAG</h2>
+<hr />
+<div class="container-fluid">
+    <div>
+        <a class="btn btn-info" href="@Url.Action("Create", "TagAdmin")">Create Tag</a>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-9">
+            @using (Html.BeginForm("Index", "TagAdmin", FormMethod.Get))
+            {
+                <p>
+                    Page Size: @Html.DropDownList("pageSize", new SelectList(ViewBag.size, "Value", "Text", ViewData["CurrentSize"]), new { @onchange = "this.form.submit();" })
+                </p>
+            }
+        </div>
+        <div class="col-md-3" style="padding-left: 6%">
+            @using (Html.BeginForm("Index", "TagAdmin", FormMethod.Get))
+            {
+                <p>
+                    @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)<button class="btn-info search" type="submit"><i class="fas fa-search"></i></button><button class="btn-info search">
+                        <i class="fas fa-window-close">
+                            <a href=@Url.Action("Index", "TagAdmin",
+                                        new {sortOrder = ""}) id="cancel"></a>
+                        </i>
+                    </button>
+                </p>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="row col-md-12">
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr class="table-head-tag">
+                    <th>
+                        @Html.ActionLink("Name", "Index", new { sortOrder = ViewData["NameSortParm"], currentFilter = ViewBag.CurrentFilter, pageSize = ViewData["CurrentSize"] })
+                    </th>
+                    <th>
+                        <a>Description</a>
+                    </th>
+                    <th>
+                        @Html.ActionLink("Posts Count", "Index", new { sortOrder = ViewData["CountSortParm"], currentFilter = ViewBag.CurrentFilter, pageSize = ViewData["CurrentSize"] })
+                    </th>
+                    <th style="width: 6%"></th>
+                    <th style="width: 6%"></th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr class="table-head-tag">
+                    <th>
+                        @Html.ActionLink("Name", "Index", new { sortOrder = ViewData["NameSortParm"], currentFilter = ViewBag.CurrentFilter, pageSize = ViewData["CurrentSize"] })
+                    </th>
+                    <th>
+                        <a>Description</a>
+                    </th>
+                    <th>
+                        @Html.ActionLink("Posts Count", "Index", new { sortOrder = ViewData["CountSortParm"], currentFilter = ViewBag.CurrentFilter, pageSize = ViewData["CurrentSize"] })
+                    </th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </tfoot>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <a href="@Url.Action("Details", "TagAdmin", new {id = item.Id})">@item.Name</a>
+                        </td>
+                        <td>
+                            @item.Description
+                        </td>
+                        <td>
+                            @item.Posts.Count
+                        </td>
+                        <td>
+                            @using (Html.BeginForm("Delete", "TagAdmin", new { id = item.Id }, FormMethod.Post))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button type="submit" onclick="return confirm('Are you sure to delete this tag?');" class="btn btn-danger" style="width: 80px">Delete</button>
+                            }
+                        </td>
+                        <td>
+                            <a class="btn btn-info" href="@Url.Action("Edit", "TagAdmin", new {id = item.Id})" style="width: 80px">Edit</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <nav aria-label="Page navigation example" style="margin-left: 40%">
+            <ul class="pagination justify-content-center">
+                @{
+                    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                    ViewBag.PageRange = 3;
+                }
+                <li class="page-item">
+                    <a href="@Url.Action("Index", "TagAdmin", new {sortOrder = ViewData["CurrentSort"], page = 1, currentFilter = ViewData["CurrentFilter"], pageSize = ViewData["CurrentSize"]})"
+                       class="btn page-link @prevDisabled"><<</a>
+                <li class="page-item">
+                    <a href="@Url.Action("Index", "TagAdmin", new {sortOrder = ViewData["CurrentSort"], page = (Model.PageIndex - 1 <= 0 ? 1 : Model.PageIndex - 1), currentFilter = ViewData["CurrentFilter"], pageSize = ViewData["CurrentSize"]})"
+                       class="btn page-link @prevDisabled"><</a>
+                </li>
+                @for (var i = 1; i <= Model.TotalPages; i++)
+                {
+                    if (i >= Model.PageIndex - ViewBag.PageRange && i <= Model.PageIndex + ViewBag.PageRange)
+                    {
+                        <li class="page-item">
+                            <a class="@(i == Model.PageIndex ? "Current" : "") page-link"
+                               href="@Url.Action("Index", "TagAdmin", new {sortOrder = ViewData["CurrentSort"], page = i, currentFilter = ViewData["CurrentFilter"], pageSize = ViewData["CurrentSize"]})">@i</a>
+                        </li>
+                    }
+                }
+                <li class="page-item">
+                    <a href="@Url.Action("Index", "TagAdmin", new {sortOrder = ViewData["CurrentSort"], page = (Model.PageIndex + 1 > Model.TotalPages ? Model.TotalPages : Model.PageIndex + 1), currentFilter = ViewData["CurrentFilter"], pageSize = ViewData["CurrentSize"]})"
+                       class="btn page-link @nextDisabled">></a>
+                <li class="page-item">
+                    <a href="@Url.Action("Index", "TagAdmin", new {sortOrder = ViewData["CurrentSort"], page = (Model.TotalPages), currentFilter = ViewData["CurrentFilter"], pageSize = ViewData["CurrentSize"]})"
+                       class="btn page-link @nextDisabled">>></a>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+
+@*@section scripts{
+        <script>
+            $('#example1').DataTable();
+        </script>
+    }*@

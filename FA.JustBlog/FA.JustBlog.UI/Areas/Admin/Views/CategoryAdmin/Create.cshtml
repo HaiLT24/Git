@@ -1,0 +1,151 @@
+﻿@model Category
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>CREATE</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+        <div class="form-group">
+            <label class="col-md-2">Name : <label style="color:red"> *</label></label>
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+            <br />
+            <label class="col-md-2">Description : </label>
+            <div class="col-md-12">
+                @Html.TextAreaFor(model => model.Description, new { @cols = "92", @rows = "5" })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+            <br />
+            <label class="col-md-2">Url : <label style="color:red"> *</label></label>
+            <div class="col-md-5">
+                @Html.EditorFor(model => model.UrlString, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.UrlString, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" value="Save" class="btn btn-success" />
+                <a class="btn btn-warning" href="@Url.Action("Index", "CategoryAdmin")">Back</a>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            jQuery.validator.addMethod("pattern",
+                function (value, element, param) {
+                    debugger
+                    return param.test(value);
+                });
+            $("#submit").validate({
+                rules: {
+                    Name: {
+                        required: true,
+                        minlength: 3
+                    },
+                    FullName: {
+                        required: true,
+                        minlength: 3,
+						maxlength: 50
+                    },
+                    Address: {
+                        required: true,
+                        minlength: 3,
+						maxlength: 256
+                    },
+                    PhoneNumber:
+                    {
+                        required: true,
+                        pattern:/^\d{10,10}$/
+                    },
+                    Password: {
+                        required: true,
+                        minlength: 6,
+                        maxlength:20,
+                        pattern: /(?=^.{6,}$)((?=.*\d)|(?=.*\W +))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/
+                    },
+                    CMT:
+                    {
+	                    required: true,
+	                    pattern: /^((\d{12,12})|(\d{9,9}))$/
+                    },
+                    DateRange:
+					{
+						required: true,
+					},
+                    Workplace: {
+	                    required: true,
+	                    minlength: 3
+                    },
+                    Experience: {
+	                    required: true,
+	                    minlength: 3
+                    }
+                },
+                messages: {
+                    Name: {
+                        required: "Email không được để trống",
+                        minlength: "Họ tên phải có ít nhất 3 ký tự"
+                    },
+                    FullName: {
+                        required: "Họ tên không được để trống",
+                        minlength: "Họ tên phải có ít nhất 3 ký tự",
+						maxlength: "Họ tên có nhiều nhất 50 ký tự"
+                    },
+                    Address: {
+                        required: "Địa chỉ không được để trống",
+                        minlength: "Địa chỉ phải có ít nhất 3 ký tự",
+						maxlength: "Địa chỉ có nhiều nhất 256 ký tự"
+                    },
+                    PhoneNumber:
+                    {
+                        required: "Số điện thoại không được để trống",
+                        pattern: "Số điện thoại phải có 10 chữ số"
+                    },
+                    Password: {
+                        required: "Mật khẩu không được để trống",
+                        minlength: "Mật khẩu phải có ít nhất 6 ký tự",
+						maxlength: "Mật khẩu có nhiều nhất 20 ký tự",
+                        pattern:
+                            "Mật khẩu phải bao gồm một chữ cái viết hoa, một chữ cái viết thường và một số hoặc ký tự đặc biệt."
+                    },
+                    CMT:
+                    {
+	                    required: "CMT/CCCD không được để trống",
+	                    pattern: "CMT/CCCD phải có 9 chữ số hoặc 12 chữ số"
+                    },
+                    DateRange:
+					{
+						required: "Ngày cấp không được để trống"
+					},
+                    Workplace: {
+	                    required: "Địa chỉ công tác không được để trống",
+	                    minlength: "Địa chỉ công tác phải có ít nhất 3 ký tự"
+                    },
+                    Experience: {
+	                    required: "Kinh nghiệm làm việc không được để trống",
+	                    minlength: "Kinh nghiệm làm việc phải có ít nhất 3 ký tự"
+                    }
+
+                }
+            })
+        })
+       
+        
+    </script>
+
+}

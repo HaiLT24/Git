@@ -1,0 +1,21 @@
+﻿@model IEnumerable<Tag>
+
+<div class="pl-2">
+    <hr />
+    <div class="row">
+        <div class="col-md-6" style="font-size: smaller">Tag Name</div>
+        <div class="col-md-3" style="font-size: smaller;  margin-left : 13%">Number</div>
+    </div>
+    <hr />
+    @foreach (var item in Model)
+    {
+        <div class="post-preview">
+            <div class="row">
+                <div class="col-md-6" style="font-size: small"><a href=@Url.Action("PostsByTag", "Post", new {tagId = item.Id})>@item.Name</a></div>
+                <div class="col-md-3" style="font-size: small; margin-left: 19%">@item.Count</div>
+            </div>
+            <hr />
+        </div>
+    }
+</div>
+

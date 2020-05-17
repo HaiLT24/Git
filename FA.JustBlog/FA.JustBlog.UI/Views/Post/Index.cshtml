@@ -1,0 +1,128 @@
+﻿@using FA.JustBlog.UI.Helper
+@model FA.JustBlog.DataAccessLayer.Common.PaginatedList<Post>
+@{
+    ViewBag.Title = "Just Blog";
+    ViewBag.UrlImage = "/Assets/img/home-bg.jpg";
+    ViewBag.Note = "A Blog Theme by Start Bootstrap";
+}
+
+<style>
+
+    h1 {
+        margin-top: 20px;
+    }
+
+    .orderby {
+        margin-top: 30px;
+    }
+
+    .search {
+        width: 36px;
+        height: 36px;
+    }
+</style>
+
+<div class="col-lg-10 col-md-12 mx-auto">
+    <div class="row">
+        <div class="col-md-8">
+            <h1 style="font-size: 38px">All posts!</h1>
+        </div>
+        <div class="col-md-4" style="padding-left: 35px; padding-right: 0px">
+            @using (Html.BeginForm("Index", "Post", FormMethod.Get))
+            {
+                <p>
+                    @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)<button class="btn-info search" type="submit"><i class="fas fa-search"></i></button><button class="btn-info search">
+                        <i class="fas fa-window-close">
+                            <a href=@Url.Action("Index", "Post",
+                                        new {sortOrder = ""}) id="cancel"></a>
+                        </i>
+                    </button>
+                </p>
+            }
+        </div>
+    </div>
+    <hr />
+    <div class="row" style="font-size: 18px">
+        @{
+            var listPageSize = new List<int>()
+            {
+                5, 10, 20, 50, 100
+            };
+        }
+        <div class="col-md-10 orderby">
+            Order By : 
+            @Html.ActionLink("Title", "Index", new { sortOrder = ViewData["NameSortParm"], currentFilter = ViewBag.CurrentFilter, pageSize = ViewData["CurrentSize"] })
+            &nbsp;
+            ||
+            &nbsp;
+            @Html.ActionLink("Posted On", "Index", new { sortOrder = ViewData["PostedOnParm"], currentFilter = ViewBag.CurrentFilter, pageSize = ViewData["CurrentSize"] })
+        </div>
+        <div class="col-md-2">
+            @using (Html.BeginForm("Index", "Post", FormMethod.Get))
+            {
+                <p>
+                    Page Size: @Html.DropDownList("pageSize", new SelectList(ViewBag.size, "Value", "Text", ViewData["CurrentSize"]), new { @onchange = "this.form.submit();" })
+                </p>
+            }
+        </div>
+
+    </div>
+    <hr />
+    @foreach (var item in Model)
+    {
+        <div class="post-preview">
+            <a href=@Url.Action("Detail", "Post", new {id = item.Id})>
+                <h2 class="post-title">
+                    @item.Title
+                </h2>
+            </a>
+            <small>Category : @Html.CategoryLink(item.Category)</small>&nbsp;
+            <small>
+                Tag :
+                @foreach (var tag in item.Tags)
+                {
+                    <a class="TagLink" href=@Url.Action("PostsByTag", "Post", new {tagId = tag.Id}) style="color: white; background: lightsalmon">@tag.Name</a>
+                }
+            </small>
+            <p class="post-meta">
+                Posted @item.PostedOn With rate @item.Rate by @item.ViewCount
+            </p>
+            <p class="post-meta">
+                @Html.Raw(item.ShortDescription)
+            </p>
+        </div>
+        <hr>
+    }
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            @{
+                var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+                var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+                ViewBag.PageRange = 3;
+            }
+            <li class="page-item">
+                <a href="@Url.Action("Index", "Post", new {sortOrder = ViewData["CurrentSort"], page = 1, currentFilter = ViewData["CurrentFilter"], pageSize = ViewData["CurrentSize"]})"
+                   class="btn page-link @prevDisabled"><<</a>
+            <li class="page-item">
+                <a href="@Url.Action("Index", "Post", new {sortOrder = ViewData["CurrentSort"], page = (Model.PageIndex - 1 <= 0 ? 1 : Model.PageIndex - 1), currentFilter = ViewData["CurrentFilter"], pageSize = ViewData["CurrentSize"]})"
+                   class="btn page-link @prevDisabled"><</a>
+            </li>
+            @for (var i = 1; i <= Model.TotalPages; i++)
+            {
+                if (i >= Model.PageIndex - ViewBag.PageRange && i <= Model.PageIndex + ViewBag.PageRange)
+                {
+                    <li class="page-item">
+                        <a class="@(i == Model.PageIndex ? "Current" : "") page-link"
+                           href="@Url.Action("Index", "Post", new {sortOrder = ViewData["CurrentSort"], page = i, currentFilter = ViewData["CurrentFilter"], pageSize = ViewData["CurrentSize"]})">@i</a>
+                    </li>
+                }
+            }
+            <li class="page-item">
+                <a href="@Url.Action("Index", "Post", new {sortOrder = ViewData["CurrentSort"], page = (Model.PageIndex + 1 > Model.TotalPages ? Model.TotalPages : Model.PageIndex + 1), currentFilter = ViewData["CurrentFilter"], pageSize = ViewData["CurrentSize"]})"
+                   class="btn page-link @nextDisabled">></a>
+            <li class="page-item">
+                <a href="@Url.Action("Index", "Post", new {sortOrder = ViewData["CurrentSort"], page = (Model.TotalPages), currentFilter = ViewData["CurrentFilter"], pageSize = ViewData["CurrentSize"]})"
+                   class="btn page-link @nextDisabled">>></a>
+        </ul>
+    </nav>
+</div>
